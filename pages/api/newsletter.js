@@ -12,11 +12,15 @@ export default async function handler(req, res) {
       return;
     }
 
-    const client = await MongoClient.connect(process.env.MONGODB_URI);
+    const client = await MongoClient.connect(process.env.MONGODB_URI, {
+      useUnifiedTopology: true,
+      retryWrites: true,
+      writeConcern: { w: 'majority' },
+    });
 
-    const db = client.db();
+    const db = client.db('events');
 
-    await db.collection('emails').insertOne({ email: userEmail });
+    await db.collection('newsletter').insertOne({ email: userEmail });
 
     client.close();
 
