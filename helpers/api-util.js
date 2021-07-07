@@ -40,3 +40,21 @@ export async function getFilteredEvents(dateFilter) {
 
   return filteredEvents;
 }
+
+export async function getAllDocuments(
+  client,
+  dbName,
+  collection,
+  sort,
+  filter = {}
+) {
+  const db = client.db(dbName);
+
+  const documents = await db
+    .collection(collection)
+    .find(filter)
+    .sort(sort)
+    .toArray();
+
+  return documents;
+}

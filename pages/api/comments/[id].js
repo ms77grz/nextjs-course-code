@@ -1,5 +1,6 @@
 import { MongoClient } from 'mongodb';
 import dotenv from 'dotenv';
+import { getAllDocuments } from '../../../helpers/api-util';
 
 dotenv.config();
 
@@ -43,13 +44,13 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'GET') {
-    const db = client.db('events');
-
-    const documents = await db
-      .collection('comments')
-      .find()
-      .sort({ _id: -1 })
-      .toArray();
+    const documents = await getAllDocuments(
+      client,
+      'events',
+      'comments',
+      { _id: -1 },
+      { eventId: id }
+    );
 
     res.status(200).json({ comments: documents });
   }
