@@ -1,7 +1,4 @@
-import { MongoClient } from 'mongodb';
-import dotenv from 'dotenv';
-
-dotenv.config();
+import { connectDatabase, insertDocument } from '../../helpers/api-util';
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
@@ -12,17 +9,24 @@ export default async function handler(req, res) {
       return;
     }
 
-    const client = await MongoClient.connect(process.env.MONGODB_URI, {
-      useUnifiedTopology: true,
-      retryWrites: true,
-      writeConcern: { w: 'majority' },
-    });
+    let client;
 
-    const db = client.db('events');
+    try {
+      client = await connectDatabase();
+    } catch (error) {
+      res.status(500).json({ message: 'Connecting to the database failed!' });
+      return;
+    }
 
-    await db.collection('newsletter').insertOne({ email: userEmail });
-
-    client.close();
+    try {
+      await insertDocument(client, 'events', 'newsletter', {
+        email: userEmail,
+      });
+      client.close();
+    } catch (error) {
+      res.status(500).json({ message: 'Inserting data failed!' });
+      return;
+    }
 
     res.status(201).json({ message: 'Signed up!' });
   }
