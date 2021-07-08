@@ -41,7 +41,7 @@ export default function Comments(props) {
         {showComments ? 'Hide' : 'Show'} Comments
       </button>
       {showComments && <NewComment onAddComment={addCommentHandler} />}
-      {showComments && <CommentList items={comments} />}
+      {showComments && comments && <CommentList items={comments} />}
     </section>
   );
 }

@@ -1,4 +1,4 @@
-import { connectDatabase, insertDocument } from '../../helpers/api-util';
+import { connectDatabase, insertDocument } from '../../helpers/db-util';
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
@@ -22,12 +22,11 @@ export default async function handler(req, res) {
       await insertDocument(client, 'events', 'newsletter', {
         email: userEmail,
       });
+      res.status(200).json({ newsletter: userEmail });
       client.close();
     } catch (error) {
       res.status(500).json({ message: 'Inserting data failed!' });
       return;
     }
-
-    res.status(201).json({ message: 'Signed up!' });
   }
 }
