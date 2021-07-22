@@ -1,13 +1,9 @@
 import ReactMarkdown from 'react-markdown';
 import PostHeader from './post-header';
-import DUMMY_POSTS from '../../../data/dummy-posts';
 import classes from './post-content.module.css';
 
-const [DUMMY_POST] = DUMMY_POSTS;
-DUMMY_POST.content = '# This is a first post';
-
-export default function PostContent() {
-  const { title, image, slug, content } = DUMMY_POST;
+export default function PostContent({ post }) {
+  const { title, image, slug, content } = post;
 
   const imagePath = `/images/posts/${slug}/${image}`;
 
