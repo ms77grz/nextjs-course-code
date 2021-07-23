@@ -23,4 +23,5 @@ export default function handler(req, res) {
       newMessage,
     });
   }
+  res.status(422).json({ message: 'It is not a POST request!' });
 }
