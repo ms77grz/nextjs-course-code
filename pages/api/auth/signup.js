@@ -17,10 +17,6 @@ export default async function handler(req, res) {
       return;
     }
 
-    // Store it in a database
-    const hashedPassword = await hashPassword(password);
-    const newUser = { email, password: hashedPassword };
-
     // Connect to MongoDB
 
     let client;
@@ -31,6 +27,21 @@ export default async function handler(req, res) {
       res.status(500).json({ message: 'Connecting to the database failed!' });
       return;
     }
+
+    // Check if a user already exists
+
+    const db = client.db('next-auth');
+    const existingUser = await db.collection('users').findOne({ email: email });
+
+    if (existingUser) {
+      res.status(422).json({ message: 'User already exists!' });
+      client.close();
+      return;
+    }
+
+    // Store it in a database
+    const hashedPassword = await hashPassword(password);
+    const newUser = { email, password: hashedPassword };
 
     // Insert document to MongoDB
 
